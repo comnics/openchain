@@ -16,7 +16,7 @@ public class Openchain {
 	
 	//difficulty - 숫자가 클수록 어렵다. target생성 규칙상.
 	//3이상은 좀 오래걸리는 듯 합니다. 초기에 3으로 하시고 숫자를 조절해 보시면 이해가 되실듯 합니다.^^
-	public static int difficulty = 3;
+	public static int difficulty = 1;
 	
 	/**
 	 * main
@@ -30,7 +30,7 @@ public class Openchain {
 		blockchain.get(0).mineBlock(difficulty);
 		
 		//이후 블럭을 생성합니다.
-		for(int i = 1 ; i <= 10 ; i++){
+		for(int i = 1 ; i <= 5 ; i++){
 			blockchain.add(new Block("block " + i, blockchain.get(blockchain.size()-1).hash));
 			System.out.printf("\nTrying to Mine block #%d", i+1 );
 			blockchain.get(i).mineBlock(difficulty);
