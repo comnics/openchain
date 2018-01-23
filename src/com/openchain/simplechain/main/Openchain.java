@@ -43,6 +43,9 @@ public class Openchain {
 		walletA = new Wallet();
 		walletB = new Wallet();
 
+		walletA.generateKeyPair();
+		walletB.generateKeyPair();
+		
 		//Test public and private keys
 		System.out.println("Private and public keys:");
 		System.out.println(StringUtil.getStringFromKey(walletA.privateKey));

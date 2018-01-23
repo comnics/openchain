@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry excluding="libs/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/gson-2.8.2.jar"/>
 	<classpathentry kind="lib" path="libs/bcprov-jdk15on-159.jar"/>
 	<classpathentry kind="lib" path="libs/gson-2.8.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
