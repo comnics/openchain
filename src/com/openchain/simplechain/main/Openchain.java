@@ -1,9 +1,13 @@
+package com.openchain.simplechain.main;
+
 import java.security.Security;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gson.GsonBuilder;
 import com.openchain.simplechain.core.Block;
 import com.openchain.simplechain.core.Transaction;
+import com.openchain.simplechain.core.TransactionOutput;
 import com.openchain.simplechain.core.Wallet;
 import com.openchain.simplechain.util.StringUtil;
 
@@ -17,10 +21,12 @@ public class Openchain {
 
 	//blockchain ArrayList
 	public static ArrayList<Block> blockchain = new ArrayList<Block>();
+	public static HashMap<String, TransactionOutput> UTXOs = new HashMap<String, TransactionOutput>(); //list of all unspent transactions.
 	
 	//difficulty - 숫자가 클수록 어렵다. target생성 규칙상.
 	//3이상은 좀 오래걸리는 듯 합니다. 초기에 3으로 하시고 숫자를 조절해 보시면 이해가 되실듯 합니다.^^
 	public static int difficulty = 3;
+	public static float minimumTransaction = 0.1f;
 	
 	public static Wallet walletA;
 	public static Wallet walletB;
@@ -44,7 +50,7 @@ public class Openchain {
 		
 		//Create a test transaction from WalletA to walletB 
 		Transaction transaction = new Transaction(walletA.publicKey, walletB.publicKey, 5, null);
-		transaction.signature = transaction.generateSignature(walletA.privateKey);
+		transaction.generateSignature(walletA.privateKey);
 		
 		//Verify the signature works and verify it from the public key
 		System.out.println("Is signature verified");
