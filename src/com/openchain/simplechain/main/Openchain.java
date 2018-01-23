@@ -1,7 +1,15 @@
+package com.openchain.simplechain.main;
+
+import java.security.Security;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gson.GsonBuilder;
 import com.openchain.simplechain.core.Block;
+import com.openchain.simplechain.core.Transaction;
+import com.openchain.simplechain.core.TransactionOutput;
+import com.openchain.simplechain.core.Wallet;
+import com.openchain.simplechain.util.StringUtil;
 
 /**
  * 블럭체인의 간단한 구현으로 이해를 돕기 위해 목적으로 구성하고 있습니다.
@@ -13,17 +21,42 @@ public class Openchain {
 
 	//blockchain ArrayList
 	public static ArrayList<Block> blockchain = new ArrayList<Block>();
+	public static HashMap<String, TransactionOutput> UTXOs = new HashMap<String, TransactionOutput>(); //list of all unspent transactions.
 	
 	//difficulty - 숫자가 클수록 어렵다. target생성 규칙상.
 	//3이상은 좀 오래걸리는 듯 합니다. 초기에 3으로 하시고 숫자를 조절해 보시면 이해가 되실듯 합니다.^^
 	public static int difficulty = 3;
+	public static float minimumTransaction = 0.1f;
+	
+	public static Wallet walletA;
+	public static Wallet walletB;
 	
 	/**
 	 * main
 	 * @param arg
 	 */
 	public static void main(String[] arg){
+
+		//Setup Bouncey castle as a Security Provider
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); 
+		//Create the new wallets
+		walletA = new Wallet();
+		walletB = new Wallet();
+
+		//Test public and private keys
+		System.out.println("Private and public keys:");
+		System.out.println(StringUtil.getStringFromKey(walletA.privateKey));
+		System.out.println(StringUtil.getStringFromKey(walletA.publicKey));
 		
+		//Create a test transaction from WalletA to walletB 
+		Transaction transaction = new Transaction(walletA.publicKey, walletB.publicKey, 5, null);
+		transaction.generateSignature(walletA.privateKey);
+		
+		//Verify the signature works and verify it from the public key
+		System.out.println("Is signature verified");
+		System.out.println(transaction.verifiySignature());
+		
+		/*
 		//초기 블럭을 만듭니다.
 		blockchain.add(new Block("Genesis block", "0"));
 		System.out.println("\nTrying to Mine Genesis block!");
@@ -43,7 +76,7 @@ public class Openchain {
 		String blockchainJson = new GsonBuilder().setPrettyPrinting().create().toJson(blockchain);
 		System.out.println("\nOpenchain Block list : ");
 		System.out.println(blockchainJson);
-		
+		*/
 	}
 	
 	/**
