@@ -39,6 +39,7 @@ public class Openchain {
 
 		//Setup Bouncey castle as a Security Provider
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); 
+		
 		//Create the new wallets
 		walletA = new Wallet();
 		walletB = new Wallet();
@@ -47,17 +48,17 @@ public class Openchain {
 		walletB.generateKeyPair();
 		
 		//Test public and private keys
-		System.out.println("Private and public keys:");
-		System.out.println(StringUtil.getStringFromKey(walletA.privateKey));
-		System.out.println(StringUtil.getStringFromKey(walletA.publicKey));
+//		System.out.println("Private and public keys:");
+//		System.out.println(StringUtil.getStringFromKey(walletA.privateKey));
+//		System.out.println(StringUtil.getStringFromKey(walletA.publicKey));
 		
-		//Create a test transaction from WalletA to walletB 
-		Transaction transaction = new Transaction(walletA.publicKey, walletB.publicKey, 5, null);
+		//테스트를 위한 Transaction생성(WalletA -> walletB : 100)  
+		Transaction transaction = new Transaction(walletA.publicKey, walletB.publicKey, 100, null);
+		//생성된 Transaction에 서명합니다.
 		transaction.generateSignature(walletA.privateKey);
 		
-		//Verify the signature works and verify it from the public key
-		System.out.println("Is signature verified");
-		System.out.println(transaction.verifiySignature());
+		//서명한 Transaction을 검증합니다.
+		System.out.println("Is this Transaction Verify? " + transaction.verifiySignature());
 		
 		/*
 		//초기 블럭을 만듭니다.
