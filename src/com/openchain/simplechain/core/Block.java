@@ -5,6 +5,11 @@ import java.util.Date;
 
 import com.openchain.simplechain.util.StringUtil;
 
+/**
+ * 
+ * @author comnic
+ *
+ */
 public class Block {
 
 	public String hash;			/* 해시값 */
@@ -68,6 +73,11 @@ public class Block {
 		System.out.println("\n채굴 성공!!! : " + hash);
 	}
 	
+	/**
+	 * 
+	 * @param transaction
+	 * @return
+	 */
 	public boolean addTransaction(Transaction transaction) {
 		//process transaction and check if valid, unless block is genesis block then ignore.
 		if(transaction == null) return false;		

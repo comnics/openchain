@@ -12,16 +12,27 @@ import java.util.Map;
 
 import com.openchain.simplechain.main.Openchain;
 
+/**
+ * 
+ * @author comnic
+ *
+ */
 public class Wallet {
 	public PrivateKey privateKey;
 	public PublicKey publicKey;
 
 	public HashMap<String,TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
 	
+	/**
+	 * 생성자 : 키를 생성한다.
+	 */
 	public Wallet(){
 		generateKeyPair();	
 	}
 	
+	/**
+	 * key pair를 생성한다.
+	 */
 	public void generateKeyPair() {
 		try {
 			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA",
@@ -43,6 +54,11 @@ public class Wallet {
 		}
 	}
 
+	/**
+	 * 잔고를 구한다.
+	 * 
+	 * @return
+	 */
 	public float getBalance() {
 		float total = 0;
 		for (Map.Entry<String, TransactionOutput> item : Openchain.UTXOs.entrySet()) {
@@ -56,7 +72,12 @@ public class Wallet {
 		return total;
 	}
 
-	// Generates and returns a new transaction from this wallet.
+	/**
+	 * 새로운 transaction을 만들고 리턴한다.(현재 wallet에서)
+	 * @param _recipient
+	 * @param value
+	 * @return
+	 */
 	public Transaction sendFunds(PublicKey _recipient, float value) {
 		if (getBalance() < value) { // gather balance and check funds.
 			System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
@@ -75,8 +96,7 @@ public class Wallet {
 				break;
 		}
 
-		Transaction newTransaction = new Transaction(publicKey, _recipient,
-				value, inputs);
+		Transaction newTransaction = new Transaction(publicKey, _recipient, value, inputs);
 		newTransaction.generateSignature(privateKey);
 
 		for (TransactionInput input : inputs) {

@@ -21,7 +21,8 @@ public class Openchain {
 
 	//blockchain ArrayList
 	public static ArrayList<Block> blockchain = new ArrayList<Block>();
-	public static HashMap<String, TransactionOutput> UTXOs = new HashMap<String, TransactionOutput>(); //list of all unspent transactions.
+	//UTXOs
+	public static HashMap<String, TransactionOutput> UTXOs = new HashMap<String, TransactionOutput>();
 	
 	//difficulty - 숫자가 클수록 어렵다. target생성 규칙상.
 	//3이상은 좀 오래걸리는 듯 합니다. 초기에 3으로 하시고 숫자를 조절해 보시면 이해가 되실듯 합니다.^^
@@ -38,7 +39,7 @@ public class Openchain {
 	 */
 	public static void main(String[] arg){
 
-Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncey castle as a Security Provider
+		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncey castle as a Security Provider
 		
 		//Create wallets:
 		walletA = new Wallet();

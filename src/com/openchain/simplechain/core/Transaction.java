@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import com.openchain.simplechain.main.Openchain;
 import com.openchain.simplechain.util.StringUtil;
 
+/**
+ * 
+ * @author comnic
+ *
+ */
 public class Transaction {
 
 	public String transactionId; // this is also the hash of the transaction.
@@ -21,7 +26,14 @@ public class Transaction {
 	private static int sequence = 0; // a rough count of how many transactions
 										// have been generated.
 
-	// Constructor:
+	/**
+	 * 생성자.
+	 * 
+	 * @param from
+	 * @param to
+	 * @param value
+	 * @param inputs
+	 */
 	public Transaction(PublicKey from, PublicKey to, float value,
 			ArrayList<TransactionInput> inputs) {
 		this.sender = from;
@@ -30,7 +42,11 @@ public class Transaction {
 		this.inputs = inputs;
 	}
 
-	// This Calculates the transaction hash (which will be used as its Id)
+	/**
+	 * 해시를 계산한다.
+	 * 
+	 * @return
+	 */
 	private String calulateHash() {
 		sequence++; // increase the sequence to avoid 2 identical transactions
 					// having the same hash
@@ -39,7 +55,11 @@ public class Transaction {
 				+ Float.toString(value) + sequence);
 	}
 
-	// Signs all the data we dont wish to be tampered with.
+	/**
+	 * 비밀키로 서한다.
+	 * 
+	 * @param privateKey
+	 */
 	public void generateSignature(PrivateKey privateKey) {
 		String data = StringUtil.getStringFromKey(sender)
 				+ StringUtil.getStringFromKey(reciepient)
@@ -47,7 +67,11 @@ public class Transaction {
 		signature = StringUtil.applyECDSASig(privateKey, data);
 	}
 
-	// Verifies the data we signed hasnt been tampered with
+	/**
+	 * 서을 확인 한다.
+	 * 
+	 * @return
+	 */
 	public boolean verifiySignature() {
 		String data = StringUtil.getStringFromKey(sender)
 				+ StringUtil.getStringFromKey(reciepient)
@@ -55,7 +79,11 @@ public class Transaction {
 		return StringUtil.verifyECDSASig(sender, data, signature);
 	}
 
-	// Returns true if new transaction could be created.
+	/**
+	 * 거래를 처리한다.
+	 * 
+	 * @return
+	 */
 	public boolean processTransaction() {
 
 		if (verifiySignature() == false) {
@@ -76,21 +104,10 @@ public class Transaction {
 		}
 
 		// generate transaction outputs:
-		float leftOver = getInputsValue() - value; // get value of inputs then
-													// the left over change:
+		float leftOver = getInputsValue() - value;
 		transactionId = calulateHash();
-		outputs.add(new TransactionOutput(this.reciepient, value, transactionId)); // send
-																					// value
-																					// to
-																					// recipient
-		outputs.add(new TransactionOutput(this.sender, leftOver, transactionId)); // send
-																					// the
-																					// left
-																					// over
-																					// 'change'
-																					// back
-																					// to
-																					// sender
+		outputs.add(new TransactionOutput(this.reciepient, value, transactionId)); 
+		outputs.add(new TransactionOutput(this.sender, leftOver, transactionId));
 
 		// add outputs to Unspent list
 		for (TransactionOutput o : outputs) {
@@ -107,7 +124,11 @@ public class Transaction {
 		return true;
 	}
 
-	// returns sum of inputs(UTXOs) values
+	/**
+	 * input의 합을 구한다.
+	 * 
+	 * @return
+	 */
 	public float getInputsValue() {
 		float total = 0;
 		for (TransactionInput i : inputs) {
@@ -118,6 +139,11 @@ public class Transaction {
 		return total;
 	}
 
+	/**
+	 * output의 합을 구한다.
+	 * 
+	 * @return
+	 */
 	public float getOutputsValue() {
 		float total = 0;
 		for (TransactionOutput o : outputs) {
