@@ -31,22 +31,55 @@ public class Openchain {
 	public static Wallet walletA;
 	public static Wallet walletB;
 	
+	public static Transaction genesisTransaction;
 	/**
 	 * main
 	 * @param arg
 	 */
 	public static void main(String[] arg){
 
-		//Setup Bouncey castle as a Security Provider
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); 
+Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncey castle as a Security Provider
 		
-		//Create the new wallets
+		//Create wallets:
 		walletA = new Wallet();
-		walletB = new Wallet();
-
-		walletA.generateKeyPair();
-		walletB.generateKeyPair();
+		walletB = new Wallet();		
+		Wallet coinbase = new Wallet();
 		
+		//genesis 블록을 위한 최초 트랜잭션 생성 : walletA에게 100 코인을 보낸다. 초기 상태이므로 수동으로 설정한다.
+		genesisTransaction = new Transaction(coinbase.publicKey, walletA.publicKey, 100f, null);
+		genesisTransaction.generateSignature(coinbase.privateKey);//private key로 사인한다.	
+		genesisTransaction.transactionId = "0"; //the transaction id
+		genesisTransaction.outputs.add(new TransactionOutput(genesisTransaction.reciepient, genesisTransaction.value, genesisTransaction.transactionId));
+		UTXOs.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
+		
+		System.out.println("Creating and Mining Genesis block... ");
+		Block genesis = new Block("", "0");
+		genesis.addTransaction(genesisTransaction);
+		addBlock(genesis);
+		
+		//testing
+		Block block1 = new Block("", genesis.hash);
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+		System.out.println("\nWalletA is Attempting to send funds (40) to WalletB...");
+		block1.addTransaction(walletA.sendFunds(walletB.publicKey, 40f));
+		addBlock(block1);
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+		System.out.println("WalletB's balance is: " + walletB.getBalance());
+		
+		Block block2 = new Block("", block1.hash);
+		System.out.println("\nWalletA Attempting to send more funds (1000) than it has...");
+		block2.addTransaction(walletA.sendFunds(walletB.publicKey, 1000f));
+		addBlock(block2);
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+		System.out.println("WalletB's balance is: " + walletB.getBalance());
+		
+		Block block3 = new Block("", block2.hash);
+		System.out.println("\nWalletB is Attempting to send funds (20) to WalletA...");
+		block3.addTransaction(walletB.sendFunds( walletA.publicKey, 20));
+		System.out.println("\nWalletA's balance is: " + walletA.getBalance());
+		System.out.println("WalletB's balance is: " + walletB.getBalance());
+		
+		isChainValid();		
 		//Test public and private keys
 //		System.out.println("Private and public keys:");
 //		System.out.println(StringUtil.getStringFromKey(walletA.privateKey));
@@ -111,5 +144,10 @@ public class Openchain {
 			}
 		}
 		return true;
+	}	
+	
+	public static void addBlock(Block newBlock) {
+		newBlock.mineBlock(difficulty);
+		blockchain.add(newBlock);
 	}	
 }
