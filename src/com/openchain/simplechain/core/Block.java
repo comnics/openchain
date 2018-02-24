@@ -14,6 +14,7 @@ public class Block {
 
 	public String hash;			/* 해시값 */
 	public String previousHash;	/* 이전 블럭의 해시값 */
+	
 	public String merkleRoot;	/* Merkle Tree Root */
 	private String data; 		/* 블럭의 data */
 	private long timestamp; 	/* timestamp */

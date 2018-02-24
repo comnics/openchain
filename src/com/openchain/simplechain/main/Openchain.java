@@ -26,7 +26,7 @@ public class Openchain {
 	
 	//difficulty - 숫자가 클수록 어렵다. target생성 규칙상.
 	//3이상은 좀 오래걸리는 듯 합니다. 초기에 3으로 하시고 숫자를 조절해 보시면 이해가 되실듯 합니다.^^
-	public static int difficulty = 3;
+	public static int difficulty = 5;
 	public static float minimumTransaction = 0.1f;
 	
 	public static Wallet walletA;
@@ -38,6 +38,11 @@ public class Openchain {
 	 * @param arg
 	 */
 	public static void main(String[] arg){
+		
+		String _diff = System.getProperty("difficulty");
+		if(_diff != null && new Integer(difficulty) > 0){
+			difficulty = new Integer(difficulty);
+		}
 
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncey castle as a Security Provider
 		
