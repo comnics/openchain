@@ -1,17 +1,27 @@
 package com.openchain.simplechain.core;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.openchain.simplechain.util.StringUtil;
 
+/**
+ * 
+ * @author comnic
+ *
+ */
 public class Block {
 
 	public String hash;			/* 해시값 */
 	public String previousHash;	/* 이전 블럭의 해시값 */
+	
+	public String merkleRoot;	/* Merkle Tree Root */
 	private String data; 		/* 블럭의 data */
 	private long timestamp; 	/* timestamp */
 
 	private int nonce;
+	
+	public ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 	
 	/**
 	 * 새로운 블럭을 생성합니다.
@@ -46,6 +56,9 @@ public class Block {
 	 * @param difficulty
 	 */
 	public void mineBlock(int difficulty) {
+		//머클트리 루트를 추가한다.
+		merkleRoot = StringUtil.getMerkleRoot(transactions);
+		
 		//간단한 테스트와 이해를 돕기위해 target을 difficulty 숫자 만큼 앞에 0으로 채웁니다.
 		String target = new String(new char[difficulty]).replace('\0', '0');
 		
@@ -60,4 +73,23 @@ public class Block {
 		}
 		System.out.println("\n채굴 성공!!! : " + hash);
 	}
+	
+	/**
+	 * 
+	 * @param transaction
+	 * @return
+	 */
+	public boolean addTransaction(Transaction transaction) {
+		//process transaction and check if valid, unless block is genesis block then ignore.
+		if(transaction == null) return false;		
+		if((previousHash != "0")) {
+			if((transaction.processTransaction() != true)) {
+				System.out.println("Transaction failed to process. Discarded.");
+				return false;
+			}
+		}
+		transactions.add(transaction);
+		System.out.println("Transaction Successfully added to Block");
+		return true;
+	}	
 }
